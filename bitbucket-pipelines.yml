@@ -1,0 +1,22 @@
+image: nextflow/nextflow:latest
+
+pipelines:
+  custom:
+    run-e2e-tests:
+      - step:
+          name: "Run nf-test End-to-End Tests"
+          caches:
+            - pip
+          script:
+            # 1. SSH-Key prepare
+            - mkdir -p ~/.ssh
+            - echo "$PRIVATE_KEY" > ~/.ssh/id_ed25519_nf_test
+            - chmod 600 ~/.ssh/id_ed25519_nf_test
+            - ssh-keyscan bitbucket.org >> ~/.ssh/known_hosts
+
+            # 2. pipeline_dev clone
+            - GIT_SSH_COMMAND="ssh -i ~/.ssh/id_ed25519_nf_test -o UserKnownHostsFile=~/.ssh/known_hosts"
+            - git clone git@bitbucket.org:waldemarvollmer/pipeline_dev.git pipeline_dev_code
+            
+            # 3. nf-test End-to-End Tests excecute
+            - nf-test --input pipeline_dev_code --tests tests
