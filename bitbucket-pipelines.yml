@@ -9,10 +9,7 @@ pipelines:
             - echo "Triggering pipeline_e2e_tests"
             - |
               curl -X POST \
-                -u "waldemarvollmer:$API_TOKEN" \
-                -H "Content-Type: application/json" \
-                https://api.bitbucket.org/2.0/repositories/waldemarvollmer/pipeline_e2e_tests/pipelines/ \
-                -d '{
+                -u "waldemarvollmer:$API_TOKEN" -H "Content-Type: application/json" https://api.bitbucket.org/2.0/repositories/waldemarvollmer/pipeline_e2e_tests/pipelines/ -d '{
                   "target": {
                     "type": "pipeline_ref_target",
                     "ref_type": "branch",
