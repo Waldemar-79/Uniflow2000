@@ -4,18 +4,26 @@ pipelines:
   branches:
     main:
       - step:
-          name: Trigger E2E Tests
+          name: Trigger E2E Tests in pipeline_e2e_tests
           script:
-            - echo "Triggering pipeline_e2e_tests"
-            - |
-              curl -X POST -u "waldemarvollmer:$API_TOKEN" -H "Content-Type: application/json" https://api.bitbucket.org/2.0/repositories/waldemarvollmer/pipeline_e2e_tests/pipelines/ -d '{
-                  "target": {
-                    "type": "pipeline_ref_target",
-                    "ref_type": "branch",
-                    "ref_name": "main"
-                  },
-                  "selector": {
-                    "type": "custom",
-                    "pattern": "run-e2e-tests"
-                  }
-                }'
+            - echo "Triggering downstream pipeline"
+            # Alternative 1: Offizieller Atlassian Pipe (empfohlen)
+            - pipe: atlassian/trigger-pipeline:4
+              variables:
+                BITBUCKET_USERNAME: 'waldemar.vollmer79@gmail.com'
+                BITBUCKET_APP_PASSWORD: '$API_TOKEN'           # ← dein API-Token mit Pipelines: Write Scope
+                REPOSITORY: 'waldemarvollmer/pipeline_e2e_tests'
+                REF_TYPE: 'branch'
+                REF_NAME: 'main'
+                CUSTOM_PIPELINE_NAME: 'run-e2e-tests'          # muss exakt mit dem Namen in der Ziel-Repo übereinstimmen
+                # WAIT: 'true'                                 # optional: wartet auf Abschluss der getriggerten Pipeline
+                # DEBUG: 'true'                                # optional: mehr Logging im Pipe
+
+            # Optional: Wenn du zusätzlich noch etwas Loggen / Prüfen möchtest
+            - echo "Trigger-Anfrage abgeschickt – überprüfe in pipeline_e2e_tests → Pipelines"
+
+      # Optional: Zweiter Step, falls du etwas nach dem Trigger machen möchtest
+      # - step:
+      #     name: Weitere Aktionen nach Trigger
+      #     script:
+      #       - echo "Pipeline wurde getriggert – Ende"
