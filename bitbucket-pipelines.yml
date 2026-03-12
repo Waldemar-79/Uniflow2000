@@ -8,11 +8,12 @@ pipelines:
           script:
             - echo "Triggering downstream pipeline"
             # Offizieller Atlassian Pipeline
-            - pipe: atlassian/trigger-pipeline:5.0.0
+            - pipe: atlassian/trigger-pipeline:5.10.1
               variables:
                 BITBUCKET_USERNAME: '@BITBUCKET_USERNAME'
                 BITBUCKET_APP_PASSWORD: '$API_TOKEN'           # API-Token: Write Scope
-                REPOSITORY: 'waldemarvollmer/pipeline_e2e_tests'
+                REPOSITORY: 'pipeline_e2e_tests'
+                ACCOUNT: "waldemarvollmer"
                 REF_TYPE: 'branch'
                 REF_NAME: 'main'
                 CUSTOM_PIPELINE_NAME: 'run-e2e-tests'          # the same name from the second Repo
