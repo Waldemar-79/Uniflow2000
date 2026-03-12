@@ -8,7 +8,7 @@ pipelines:
           script:
             - echo "Triggering downstream pipeline"
             # Offizieller Atlassian Pipeline
-            - pipe: atlassian/trigger-pipeline:5.10.1
+            - pipe: atlassian/trigger-pipeline:5.0.0
               variables:
                 ATLASSIAN_ACCOUNT_EMAIL: '@ACCOUNT_EMAIL'      # Username = e-mail
                 ATLASSIAN_API_TOKEN: '$API_TOKEN'              # API-Token: Write Scope
