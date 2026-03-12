@@ -10,7 +10,7 @@ pipelines:
             # Offizieller Atlassian Pipeline
             - pipe: atlassian/trigger-pipeline:5.0.0
               variables:
-                BITBUCKET_USERNAME: '@USERNAME'              # Username = e-mail
+                BITBUCKET_USERNAME: '$USERNAME'              # Username = e-mail
                 BITBUCKET_APP_PASSWORD: '$API_TOKEN'              # API-Token: Write Scope
                 REPOSITORY: 'waldemarvollmer/pipeline_e2e_tests'
                 REF_TYPE: 'branch'
