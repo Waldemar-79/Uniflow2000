@@ -10,10 +10,9 @@ pipelines:
             # Offizieller Atlassian Pipeline
             - pipe: atlassian/trigger-pipeline:5.10.1
               variables:
-                BITBUCKET_USERNAME: '@USERNAME'                # Username = e-mail
-                BITBUCKET_API_TOKEN: '$API_TOKEN'              # API-Token: Write Scope
-                REPOSITORY: 'pipeline_e2e_tests'
-                ACCOUNT: "waldemarvollmer"
+                ATLASSIAN_ACCOUNT_EMAIL: '@ACCOUNT_EMAIL'      # Username = e-mail
+                ATLASSIAN_API_TOKEN: '$API_TOKEN'              # API-Token: Write Scope
+                REPOSITORY: 'waldemarvollmer/pipeline_e2e_tests'
                 REF_TYPE: 'branch'
                 REF_NAME: 'main'
                 CUSTOM_PIPELINE_NAME: 'run-e2e-tests'          # the same name from the second Repo
