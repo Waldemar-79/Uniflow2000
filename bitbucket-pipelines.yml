@@ -10,7 +10,7 @@ pipelines:
             # Offizieller Atlassian Pipeline
             - pipe: atlassian/trigger-pipeline:5.10.1
               variables:
-                BITBUCKET_USERNAME: '@BITBUCKET_USERNAME'
+                BITBUCKET_USERNAME: '@BITBUCKET_USERNAME'      # Username (Account settings) not the e-mail
                 BITBUCKET_APP_PASSWORD: '$API_TOKEN'           # API-Token: Write Scope
                 REPOSITORY: 'pipeline_e2e_tests'
                 ACCOUNT: "waldemarvollmer"
