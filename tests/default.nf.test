@@ -5,10 +5,7 @@ nextflow_pipeline {
     
     tag "pipeline"
     tag "hello World"
-    tag "feature"
-    tag "fix"
-    tag "breaking-feature"
-
+ 
     test("-profile test") {
 
         when {
