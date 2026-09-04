@@ -5,6 +5,7 @@ nextflow_pipeline {
     
     tag "pipeline"
     tag "hello World"
+    tag "feature"
 
     test("-profile test") {
 
