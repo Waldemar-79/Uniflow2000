@@ -59,8 +59,8 @@ pipelines:
             # automated merge back to the main
             - |
               HTTP_STATUS=$(curl -sSf -X POST \
-              -H "Authorization Bearer ${BITBUCKET_TOKEN}" \
-              H "Content-Type: application/json" \
+              -H "Authorization: Bearer ${BITBUCKET_TOKEN}" \
+              -H "Content-Type: application/json" \
               "https://api.bitbucket.org/2.0/repositories/${BITBUCKET_WORKSPACE}/${BITBUCKET_REPO_SLUG}/pullrequests/${PR_ID}/merge" \
               -d '{
               	"merge_strategy": "merge_commit",
