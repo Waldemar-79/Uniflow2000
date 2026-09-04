@@ -49,7 +49,7 @@ pipelines:
                 "title": "chore: release version '"$NEXT_VERSION"'",
                 "source": { "branch": { "name": "'"$BRANCH_NAME"'" } },
                 "destination": { "branch": { "name": "main" } },
-                "description": "Automated release update for nextflow.config and CHANGELOG.md.",
+                "description": "Automated release update for nextflow.config and CHANGELOG.md."
               }')
             
             # get the new PR-ID
