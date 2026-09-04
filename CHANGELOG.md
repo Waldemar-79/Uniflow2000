@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v2.2.0 (2026-09-04)
+
+### Features
+
+- Update
+  ([`560d603`](https://bitbucket.org/waldemarvollmer/pipeline_dev/commits/560d60381407295051b09cfa66430a4955f29e10))
+
+
 ## v2.1.0 (2026-09-04)
 
 ### Features
