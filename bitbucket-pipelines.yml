@@ -2,7 +2,7 @@ image: atlassian/default-image:3
 
 pipelines:
   branches:
-    main:
+    develop:
       - step:
           name: Create Release Branch and PR
           image: python:3.13
@@ -11,36 +11,29 @@ pipelines:
           script:
             - apt-get update && apt-get install -y jq
             - pip install python-semantic-release==10.6.1 GitPython==3.1.46 gitdb==4.0.12
-            
+              
             - echo "=== Installed versions ==="
             - pip freeze | grep -Ei "semantic|gitpython|gitdb"
-
             - git config --global user.name "pipeline bot"
             - git config --global user.email "pipeline@atrandi.com"
-
             - LAST_VERSION=$(semantic-release version --print-last-released)
             - NEXT_VERSION=$(semantic-release version --print) #calculate and get the last version
-            
-            # no new version
+                # no new version
             - |
               if [ -n "$LAST_VERSION" ] && [ "$LAST_VERSION" = "$NEXT_VERSION" ]; then
                 echo "No new release required. Nothing to do."
                 exit 0
-              fi
-
+              fi  
+            
             - echo "Next version $NEXT_VERSION detected. continue with branch/pr"
             - BRANCH_NAME="release/v${NEXT_VERSION}"
-
-            # create the temp branch and switch to the branch
+                # create the temp branch and switch to the branch
             - git checkout -b "$BRANCH_NAME"
-
             - semantic-release version --no-push
-
-            # push branch and tag 
+                # push branch and tag 
             - git remote set-url origin https://x-token-auth:${BITBUCKET_TOKEN}@bitbucket.org/${BITBUCKET_WORKSPACE}/${BITBUCKET_REPO_SLUG}.git
             - git push origin $BRANCH_NAME --tags
-
-            # create the PR
+                # create the PR
             - |
               PR_RESPONSE=$(curl -sSf -X POST -H "Authorization: Bearer ${BITBUCKET_TOKEN}" \
               -H "Content-Type: application/json" \
@@ -55,7 +48,7 @@ pipelines:
             # get the new PR-ID
             - PR_ID=$(echo "$PR_RESPONSE" | jq '.id')
             - echo "Pull Request create ${PR_ID} successful"
-          
+
             # automated merge back to the main
             - |
               HTTP_STATUS=$(curl -sSf -X POST \
@@ -67,18 +60,25 @@ pipelines:
                 "message": "chore(release): v'"$NEXT_VERSION"' [skip ci]",
                 "close_source_branch": true
               }')
-              
+
             - echo "HTTP status ${HTTP_STATUS}"
             - echo "Bitbucket response"
-            - cat /tmp/merge_response.json
+            
             - |
               if [ "$HTTP_STATUS" -ge 200 ] && [ "$HTTP_STATUS" -lt 300 ]; then
                 echo "Merge Release v${NEXT_VERSION} successful"
               else
                 echo "ERROR: Merge Release v${NEXT_VERSION} failed"
                 exit 1
-              fi
-
+              fi  
+        
+        
+    main:
+      - step:
+          name: Skip tests
+          script:
+            - echo "skiped main step
+            
       # Optional: Second Step, if you want to do something after the trigger
       # - step:
       #     name: More Actions
