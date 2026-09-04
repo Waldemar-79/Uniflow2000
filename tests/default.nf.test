@@ -4,11 +4,8 @@ nextflow_pipeline {
     script "../main.nf"
     
     tag "pipeline"
-    tag "hello World"
-    tag "feature"
-    tag "fix"
-    tag "breaking-feature"
-
+    tag "hello"
+ 
     test("-profile test") {
 
         when {
