@@ -5,7 +5,7 @@ pipelines:
     develop:
       - step:
           name: Create Release Branch and PR
-          iamge: python:3.13
+          image: python:3.13
           clone:
             depth: full
           script:
@@ -75,11 +75,9 @@ pipelines:
         
     main:
       - step:
-          name: Create Release Branch and PR
-          image: python:3.13
-          clone:
-            depth: full
+          name: Skip tests
           script:
+            - echo "skiped main step
             
       # Optional: Second Step, if you want to do something after the trigger
       # - step:
