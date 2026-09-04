@@ -50,7 +50,6 @@ pipelines:
                 "source": { "branch": { "name": "'"$BRANCH_NAME"'" } },
                 "destination": { "branch": { "name": "main" } },
                 "description": "Automated release update for nextflow.config and CHANGELOG.md.",
-                "close_source_branch": true
               }')
             
             # get the new PR-ID
