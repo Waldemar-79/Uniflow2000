@@ -16,8 +16,8 @@ allowed_tags = ["feat", "fix", "chore", "docs", "ci", "test"]
 parse_squash_commits = true
 ignore_merge_commits = false
 
-[tool.semantic_release.branches.main]
-match = "(main|master|release/v.*)"
+[tool.semantic_release.branches.develop]
+match = "(develop|release/v.*)"
 prerelease = false
 
 [tool.semantic_release.remote]
