@@ -4,23 +4,60 @@ pipelines:
   branches:
     main:
       - step:
-          name: Trigger E2E Tests in pipeline_e2e_tests
+          name: Create Release Branch and PR
+          image: python:3.13
+          clone:
+            depth: full
           script:
-            - echo "Triggering downstream pipeline"
-            # Offizieller Atlassian Pipeline
-            - pipe: atlassian/trigger-pipeline:5.0.0
-              variables:
-                BITBUCKET_USERNAME: '$USERNAME'              # Username = e-mail
-                BITBUCKET_APP_PASSWORD: '$API_TOKEN'              # API-Token: Write Scope
-                REPOSITORY: 'pipeline_e2e_tests'
-                REF_TYPE: 'branch'
-                REF_NAME: 'main'
-                CUSTOM_PIPELINE_NAME: 'run-e2e-tests'          # the same name from the second Repo
-                # WAIT: 'true'                                 # optional: wait for another Pipe
-                DEBUG: 'true'                                  # optional: more Logs
+            - apt-get update && apt-get install -y jq
+            - pip install python-semantic-release==10.6.1 GitPython==3.1.46 gitdb==4.0.12
+            
+            - echo "=== Installed versions ==="
+            - pip freeze | grep -Ei "semantic|gitpython|gitdb"
 
-            # Optional: for Logging
-            - echo "Trigger-Anfrage abgeschickt – überprüfe in pipeline_e2e_tests → Pipelines"
+            - git config --global user.name "pipeline bot"
+            - git config --global user.email "pipeline@atrandi.com"
+
+            - LAST_VERSION=$(semantic-release version --print-last-released)
+            - NEXT_VERSION=$(semantic-release version --print) #calculate and get the last version
+            
+            # no new version
+            - |
+              if [ -n "$LAST_VERSION" ] && [ "$LAST_VERSION" = "$NEXT_VERSION" ]; then
+                echo "No new release required. Nothing to do."
+                exit 0
+              fi
+
+            - echo "Next version $NEXT_VERSION detected. continue with branch/pr"
+            - BRANCH_NAME="release/v${NEXT_VERSION}"
+
+            # create the temp branch and switch to the branch
+            - git checkout -b "$BRANCH_NAME"
+
+            - semantic-release version --no-push
+
+            # push branch and tag 
+            - git remote set-url origin https://x-token-auth:${BITBUCKET_TOKEN}@bitbucket.org/${BITBUCKET_WORKSPACE}/${BITBUCKET_REPO_SLUG}.git
+            - git push origin $BRANCH_NAME --tags
+
+            # create the PR
+            - |
+              PR_RESPONSE=$(curl -sSf -X POST -H "Authorization: Bearer ${BITBUCKET_TOKEN}" \
+              -H "Content-Type: application/json" \
+              https://api.bitbucket.org/2.0/repositories/${BITBUCKET_WORKSPACE}/${BITBUCKET_REPO_SLUG}/pullrequests \
+              -d '{
+                "title": "chore: release version '"$NEXT_VERSION"'",
+                "source": { "branch": { "name": "'"$BRANCH_NAME"'" } },
+                "destination": { "branch": { "name": "main" } },
+                "description": "Automated release update for nextflow.config and CHANGELOG.md.",
+                "close_source_branch": true
+              }')
+            
+            # get the new PR-ID
+            - PR_ID=$(echo "$PR_RESPONSE" | jq '.id')
+            - echo "Pull Request create ${PR_ID} successful"
+          
+            # next step - automated merge back to the main
 
       # Optional: Second Step, if you want to do something after the trigger
       # - step:
