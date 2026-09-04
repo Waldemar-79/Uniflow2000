@@ -12,8 +12,9 @@ version_variables = [
 # our rules
 minor_tags = ["feat"]
 patch_tags = ["fix"]
-# docs, chore, ci, test, … → no Releases (Default conventional)
+allowed_tags = ["feat", "fix", "chore", "docs", "ci", "test"]
 parse_squash_commits = true
+ignore_merge_commits = false
 
 [tool.semantic_release.branches.main]
 match = "(main|master|release/v.*)"
