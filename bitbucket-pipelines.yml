@@ -57,7 +57,28 @@ pipelines:
             - PR_ID=$(echo "$PR_RESPONSE" | jq '.id')
             - echo "Pull Request create ${PR_ID} successful"
           
-            # next step - automated merge back to the main
+            # automated merge back to the main
+            - |
+              HTTP_STATUS=$(curl -sSf -X POST \
+              -H "Authorization Bearer ${BITBUCKET_TOKEN}" \
+              H "Content-Type: application/json" \
+              "https://api.bitbucket.org/2.0/repositories/${BITBUCKET_WORKSPACE}/${BITBUCKET_REPO_SLUG}/pullrequests/${PR_ID}/merge" \
+              -d '{
+              	"merge_strategy": "merge_commit",
+                "message": "chore(release): v'"$NEXT_VERSION"' [skip ci]",
+                "close_source_branch": true
+              }')
+              
+            - echo "HTTP status ${HTTP_STATUS}"
+            - echo "Bitbucket response"
+            - cat /tmp/merge_response.json
+            - |
+              if [ "$HTTP_STATUS" -ge 200 ] && [ "$HTTP_STATUS" -lt 300 ]; then
+                echo "Merge Release v${NEXT_VERSION} successful"
+              else
+                echo "ERROR: Merge Release v${NEXT_VERSION} failed"
+                exit 1
+              fi
 
       # Optional: Second Step, if you want to do something after the trigger
       # - step:
