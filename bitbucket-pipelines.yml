@@ -71,7 +71,7 @@ pipelines:
             depth: full
           script:
             - git remote add github-target git@github.com:Waldemar-79/Uniflow2000.git
-            - git push github-target main --force
+            - git push github-target main --tags --force
             
       # Optional: Second Step, if you want to do something after the trigger
       # - step:
