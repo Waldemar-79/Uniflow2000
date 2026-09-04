@@ -70,7 +70,7 @@ pipelines:
               
             - echo "HTTP status ${HTTP_STATUS}"
             - echo "Bitbucket response"
-            - cat /tmp/merge_response.json
+            
             - |
               if [ "$HTTP_STATUS" -ge 200 ] && [ "$HTTP_STATUS" -lt 300 ]; then
                 echo "Merge Release v${NEXT_VERSION} successful"
