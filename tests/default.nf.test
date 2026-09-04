@@ -7,6 +7,7 @@ nextflow_pipeline {
     tag "hello World"
     tag "feature"
     tag "fix"
+    tag "breaking-feature"
 
     test("-profile test") {
 
